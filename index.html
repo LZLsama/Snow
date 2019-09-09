@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    html,body {
+        background-color: black;
+    }
+    
+    
+    </style>
+</head>
+<body>
+    <!-- canvas 宽高不能写百分比 -->
+    <canvas id="canvas" width="1500" height="700"></canvas>
+
+
+
+    <script>
+    var oCanvas = document.getElementById('canvas');
+    var ctx = oCanvas.getContext('2d');
+    var width = oCanvas.width;
+    var height = oCanvas.height;
+    // var snowLen = 30;
+    // var deg = 0;
+
+    function randomSnow () {
+        var x = parseInt(Math.random() * width);
+        var y = 0;
+        var deg = parseInt(Math.random() * 30);
+        var snowLen = parseInt(Math.random() * 15 +10);
+        var speedX = parseInt(Math.random() * 20 -10);
+        var speedY = parseInt(Math.random() * 10 + 10);
+        if (Math.random() < 0.5) {
+            var t = x;
+            x = y;
+            y = t;
+        }
+        return {
+            x:x,
+            y:y,
+            deg: deg,
+            snowLen: snowLen,
+            speedX: speedX,
+            speedY: speedY
+        }
+    }
+
+    function drawSnow (snow, deg) {
+        ctx.beginPath();
+        var realDeg = deg * Math.PI / 180;
+        ctx.moveTo(snow.x - snow.snowLen * Math.cos(realDeg), snow.y - snow.snowLen * Math.sin(realDeg));
+        ctx.lineTo(snow.x + snow.snowLen * Math.cos(realDeg), snow.y + snow.snowLen * Math.sin(realDeg));
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 6;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        ctx.beginPath();
+        var realDeg1 = (60 - deg) * Math.PI / 180;
+        ctx.moveTo(snow.x + snow.snowLen * Math.cos(realDeg1), snow.y - snow.snowLen * Math.sin(realDeg1));
+        ctx.lineTo(snow.x - snow.snowLen * Math.cos(realDeg1), snow.y + snow.snowLen * Math.sin(realDeg1));
+        ctx.stroke();
+        1
+        ctx.beginPath();
+        if (deg + 60 < 90) {
+            var realDeg2 = (deg + 60) * Math.PI / 180;
+            ctx.moveTo(snow.x - snow.snowLen * Math.cos(realDeg2), snow.y - snow.snowLen * Math.sin(realDeg2));
+            ctx.lineTo(snow.x + snow.snowLen * Math.cos(realDeg2), snow.y + snow.snowLen * Math.sin(realDeg2));
+            ctx.stroke();
+        } else if (deg + 60 > 90) {
+            var realDeg2 = (120 - deg) * Math.PI /180;
+            ctx.moveTo(snow.x + snow.snowLen * Math.cos(realDeg2), snow.y - snow.snowLen * Math.sin(realDeg2));
+            ctx.lineTo(snow.x - snow.snowLen * Math.cos(realDeg2), snow.y + snow.snowLen * Math.sin(realDeg2));
+            ctx.stroke();
+        } else {
+            ctx.moveTo(snow.x , snow.y - snow.snowLen);
+            ctx.lineTo(snow.x , snow.y + snow.snowLen);
+            ctx.stroke();
+        }
+    }
+
+    // var deg = 0;
+    var snowArr = [];
+    var timer = setInterval(function () {
+        var snow = randomSnow();
+        snowArr.push(snow);
+        snowArr = snowArr.filter(function (item) {
+            return item.y < height
+        });
+        ctx.clearRect(0, 0, width, height);
+        for (var i = 0; i < snowArr.length; i++) {
+            drawSnow(snowArr[i], snowArr[i].deg);
+            snowArr[i].deg += 10;
+            if (snowArr[i].deg > 60) {
+                snowArr[i].deg = 0
+            };
+            snowArr[i].x += snowArr[i].speedX;
+            snowArr[i].y += snowArr[i].speedY;
+        }
+    }, 50)
+    </script>
+</body>
+</html>
